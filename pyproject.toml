@@ -1,0 +1,57 @@
+[project]
+name = "go-archiver"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "tadeasf", email = "business@tadeasfort.com" }
+]
+dependencies = [
+    "typer>=0.15.1",
+    "prompt-toolkit>=0.48",
+    "pybindgen>=0.22.1",
+    "setuptools>=75.6.0",
+    "wheel>=0.45.1",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/go_archiver"]
+
+[tool.hatch.build.hooks.custom]
+path = "src/go_archiver/build.py"
+
+[tool.pytest.ini_options]
+testpaths = ["src/go_archiver/tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=go_archiver"
+
+[tool.rye.scripts]
+# Development commands
+build-go = "python src/go_archiver/build.py"
+test = "pytest"
+test-cov = "pytest --cov=go_archiver --cov-report=term-missing"
+
+# Installation commands
+install-dev = { chain = [
+    "build-go",
+    "pip install -e ."
+]}
+install = { chain = [
+    "build-go",
+    "pip install ."
+]}
